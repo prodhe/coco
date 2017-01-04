@@ -1,12 +1,13 @@
-// coco.go
-//
-// Code Counter
-//
-// Similar to the classic wc command, but counts comments and empty lines as
-// well. Lines that contain both code and comments are counted only as code.
-//
-// Outputs "<total>: <lines> <comments> <empty lines>"
+/*
+coco.go
 
+Code Counter
+
+Similar to the classic wc command, but counts comments and empty lines as
+well. Lines that contain both code and comments are counted only as code.
+
+Outputs "<total>: <lines> <comments> <empty lines>"
+*/
 package main
 
 import (

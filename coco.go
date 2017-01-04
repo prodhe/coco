@@ -1,12 +1,13 @@
-// coco.go
-//
-// Code Counter
-//
-// Similar to the classic wc command, but counts comments and empty lines as
-// well. Lines that contain both code and comments are counted only as code.
-//
-// Outputs "<total>: <lines> <comments> <empty lines>"
+/*
+coco.go
 
+Code Counter
+
+Similar to the classic wc command, but counts comments and empty lines as
+well. Lines that contain both code and comments are counted only as code.
+
+Outputs "<total> <lines> <comments> <empty lines>"
+*/
 package main
 
 import (
@@ -79,7 +80,7 @@ func main() {
 			fmt.Println("Comments:", comments)
 			fmt.Println("Empty:", empties)
 		} else {
-			fmt.Printf("%d: %d %d %d\n", total, lines, comments, empties)
+			fmt.Printf("%d %d %d %d\n", total, lines, comments, empties)
 		}
 	}
 }
@@ -133,16 +134,12 @@ func count(line string, n int) {
 		return
 	}
 
-	if line == "\n" {
+	switch {
+	case line == "\n":
 		empties++
-	} else if strings.HasPrefix(line, *single) {
+	case strings.HasPrefix(line, *single):
 		comments++
-	} else if multiDelim[0] != "" && strings.HasPrefix(line, multiDelim[0]) {
-		if !strings.HasSuffix(line, multiDelim[1]) {
-			inComment = true
-		}
-		comments++
-	} else {
+	default:
 		lines++
 	}
 }

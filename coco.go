@@ -22,21 +22,16 @@ var (
 	help    = flag.Bool("help", false, "Show usage")
 	verbose = flag.Bool("verbose", false, "Output title for each count")
 	single  = flag.String("single", "//", "Single-line comment")
-	multi   = flag.String("multi", "/* */", "Multi-line comment with start and end separated by a space.")
 
 	lines    uint32
 	comments uint32
 	empties  uint32
-
-	multiDelim [2]string
-	inComment  bool = false
 )
 
 func init() {
 	flag.BoolVar(help, "h", false, "")
 	flag.BoolVar(verbose, "v", false, "")
 	flag.StringVar(single, "s", "//", "Alias for -single")
-	flag.StringVar(multi, "m", "/* */", "Alias for -multi")
 }
 
 func main() {
@@ -45,16 +40,6 @@ func main() {
 	if *help {
 		printHelp()
 		os.Exit(1)
-	}
-
-	if *multi != "" {
-		if split := strings.Split(*multi, " "); len(split) != 2 {
-			fmt.Fprint(os.Stderr, "option error: bad format in -multi\n")
-			os.Exit(1)
-		} else {
-			multiDelim[0] = split[0]
-			multiDelim[1] = split[1]
-		}
 	}
 
 	if flag.NArg() == 0 {
@@ -119,28 +104,12 @@ func read(file string, f *os.File) {
 	}
 }
 
-/*
-* TODO: fix multiline
-* */
 func count(line string, n int) {
 	line = strings.Trim(line, " \t")
-
-	if inComment {
-		comments++
-		if strings.Contains(line, multiDelim[1]) {
-			inComment = false
-		}
-		return
-	}
 
 	if line == "\n" {
 		empties++
 	} else if strings.HasPrefix(line, *single) {
-		comments++
-	} else if multiDelim[0] != "" && strings.HasPrefix(line, multiDelim[0]) {
-		if !strings.HasSuffix(line, multiDelim[1]) {
-			inComment = true
-		}
 		comments++
 	} else {
 		lines++

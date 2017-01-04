@@ -108,11 +108,12 @@ func read(file string, f *os.File) {
 func count(line string, n int) {
 	line = strings.Trim(line, " \t")
 
-	if line == "\n" {
+	switch {
+	case line == "\n":
 		empties++
-	} else if strings.HasPrefix(line, *single) {
+	case strings.HasPrefix(line, *single):
 		comments++
-	} else {
+	default:
 		lines++
 	}
 }

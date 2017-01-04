@@ -6,7 +6,7 @@ Code Counter
 Similar to the classic wc command, but counts comments and empty lines as
 well. Lines that contain both code and comments are counted only as code.
 
-Outputs "<total>: <lines> <comments> <empty lines>"
+Outputs "<total> <lines> <comments> <empty lines>"
 */
 package main
 
@@ -65,7 +65,7 @@ func main() {
 			fmt.Println("Comments:", comments)
 			fmt.Println("Empty:", empties)
 		} else {
-			fmt.Printf("%d: %d %d %d\n", total, lines, comments, empties)
+			fmt.Printf("%d %d %d %d\n", total, lines, comments, empties)
 		}
 	}
 }

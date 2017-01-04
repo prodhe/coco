@@ -73,15 +73,13 @@ func main() {
 	}
 
 	total := lines + comments + empties
-	if total > 0 {
-		if *verbose {
-			fmt.Println("Total:", total)
-			fmt.Println("Lines:", lines)
-			fmt.Println("Comments:", comments)
-			fmt.Println("Empty:", empties)
-		} else {
-			fmt.Printf("%d %d %d %d\n", total, lines, comments, empties)
-		}
+	if *verbose {
+		fmt.Println("Total:", total)
+		fmt.Println("Lines:", lines)
+		fmt.Println("Comments:", comments)
+		fmt.Println("Empty:", empties)
+	} else {
+		fmt.Printf("%d %d %d %d\n", total, lines, comments, empties)
 	}
 }
 

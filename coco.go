@@ -23,16 +23,21 @@ var (
 	help    = flag.Bool("help", false, "Show usage")
 	verbose = flag.Bool("verbose", false, "Output title for each count")
 	single  = flag.String("single", "//", "Single-line comment")
+	multi   = flag.String("multi", "/* */", "Multi-line comment with start and end separated by a space.")
 
 	lines    uint32
 	comments uint32
 	empties  uint32
+
+	multiDelim [2]string
+	inComment  bool = false
 )
 
 func init() {
 	flag.BoolVar(help, "h", false, "")
 	flag.BoolVar(verbose, "v", false, "")
 	flag.StringVar(single, "s", "//", "Alias for -single")
+	flag.StringVar(multi, "m", "/* */", "Alias for -multi")
 }
 
 func main() {
@@ -41,6 +46,16 @@ func main() {
 	if *help {
 		printHelp()
 		os.Exit(1)
+	}
+
+	if *multi != "" {
+		if split := strings.Split(*multi, " "); len(split) != 2 {
+			fmt.Fprint(os.Stderr, "option error: bad format in -multi\n")
+			os.Exit(1)
+		} else {
+			multiDelim[0] = split[0]
+			multiDelim[1] = split[1]
+		}
 	}
 
 	if flag.NArg() == 0 {
@@ -72,12 +87,12 @@ func printHelp() {
 	fmt.Println(`Usage: coco [options] [files...]
 Prints a summary of total, non-commented, commented and empty lines.
 
-The default comment style is C. To change it, use the -s option.
+The default comment style is C. To change it, use the -s and -m options.
 
 If no files are given, standard input is used.
 
 Example:
-    coco -s "#" main.py
+    coco -s "#" -m "" main.py
     cat lib.c | coco
 `)
 	flag.PrintDefaults()
@@ -105,6 +120,28 @@ func read(file string, f *os.File) {
 
 func count(line string, n int) {
 	line = strings.Trim(line, " \t")
+
+	if *multi != "" {
+		if inComment {
+			comments++
+			if strings.Contains(line, multiDelim[1]) {
+				inComment = false
+			}
+			return
+		}
+		switch {
+		case strings.HasPrefix(line, multiDelim[0]) &&
+			strings.HasSuffix(line, multiDelim[1]):
+			comments++
+			return
+		case strings.Contains(line, multiDelim[0]):
+			if !strings.Contains(line, multiDelim[1]) {
+				inComment = true
+			}
+			comments++
+			return
+		}
+	}
 
 	switch {
 	case line == "\n":

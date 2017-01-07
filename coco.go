@@ -121,25 +121,31 @@ func read(file string, f *os.File) {
 func count(line string, n int) {
 	line = strings.Trim(line, " \t")
 
-	if inComment {
-		comments++
-		if strings.Contains(line, multiDelim[1]) {
-			inComment = false
+	if *multi != "" {
+		if inComment {
+			comments++
+			if strings.Contains(line, multiDelim[1]) {
+				inComment = false
+			}
+			return
 		}
-		return
+		switch {
+		case strings.HasPrefix(line, multiDelim[0]) &&
+			strings.HasSuffix(line, multiDelim[1]):
+			comments++
+			return
+		case strings.Contains(line, multiDelim[0]):
+			if !strings.Contains(line, multiDelim[1]) {
+				inComment = true
+			}
+			comments++
+			return
+		}
 	}
 
 	switch {
 	case line == "\n":
 		empties++
-	case strings.HasPrefix(line, multiDelim[0]) &&
-		strings.HasSuffix(line, multiDelim[1]):
-		comments++
-	case strings.Contains(line, multiDelim[0]):
-		if !strings.Contains(line, multiDelim[1]) {
-			inComment = true
-		}
-		comments++
 	case strings.HasPrefix(line, *single):
 		comments++
 	default:

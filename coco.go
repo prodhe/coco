@@ -72,12 +72,12 @@ func printHelp() {
 	fmt.Println(`Usage: coco [options] [files...]
 Prints a summary of total, non-commented, commented and empty lines.
 
-The default comment style is C. To change it, use the -s and -m options.
+The default comment style is C. To change it, use the -s option.
 
 If no files are given, standard input is used.
 
 Example:
-    coco -s "#" -m "" main.py
+    coco -s "#" main.py
     cat lib.c | coco
 `)
 	flag.PrintDefaults()

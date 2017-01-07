@@ -118,9 +118,6 @@ func read(file string, f *os.File) {
 	}
 }
 
-/*
-* TODO: fix multiline
-* */
 func count(line string, n int) {
 	line = strings.Trim(line, " \t")
 

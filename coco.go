@@ -135,6 +135,14 @@ func count(line string, n int) {
 	switch {
 	case line == "\n":
 		empties++
+	case strings.HasPrefix(line, multiDelim[0]) &&
+		strings.HasSuffix(line, multiDelim[1]):
+		comments++
+	case strings.Contains(line, multiDelim[0]):
+		if !strings.Contains(line, multiDelim[1]) {
+			inComment = true
+		}
+		comments++
 	case strings.HasPrefix(line, *single):
 		comments++
 	default:
